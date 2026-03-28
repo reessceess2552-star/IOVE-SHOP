@@ -1,67 +1,74 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<title>IOVE SHOP</title>
-
-<style>
-body {
-  margin: 0;
-  font-family: Arial;
-  background: black;
-  color: white;
-  text-align: center;
+  background: rgba(255,255,255,0.1);
+  border-radius: 20px;
+  border: 1px solid pink;
+  backdrop-filter: blur(10px);
 }
 
-header {
-  padding: 20px;
-  font-size: 28px;
-  background: #111;
-}
-
-.box {
-  margin: 20px;
-  padding: 20px;
-  background: #222;
-  border-radius: 10px;
-}
-
+/* ปุ่ม */
 button {
-  padding: 10px 20px;
-  background: red;
+  padding: 14px 25px;
+  background: linear-gradient(45deg, pink, hotpink);
   border: none;
   color: white;
-  border-radius: 8px;
+  border-radius: 15px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  transform: scale(1.1);
+}
+
+/* ✨ เอฟเฟกต์หัวใจตก */
+.heart {
+  position: fixed;
+  top: -10px;
+  font-size: 20px;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(100vh);
+  }
 }
 </style>
-</head>
 
+</head>
 <body>
 
-<header>🔥 IOVE SHOP 🔥</header>
+<header>💖 IOVE SHOP 💖</header>
 
 <div class="box">
   <h2>🎮 รับเติมเกม</h2>
-  <p>💎 Free Fire / Roblox / ROV</p>
-  <p>⚡ เติมไว ปลอดภัย 100%</p>
+  <p>Free Fire / Roblox / ROV</p>
+  <button>💰 เติมเงิน</button>
 </div>
 
 <div class="box">
-  <h2>💰 วิธีสั่งซื้อ</h2>
-  <p>1. กดปุ่มด้านล่าง</p>
-  <p>2. ทัก LINE</p>แอดไลน์@supakorn22552
-  <p>3. แจ้งเกม + จำนวน</p>
-  <p>4. โอนเงิน</p>ทักมาในลาย
-  <p>5. รอรับของ</p>
-</div>
-
-<div class="box">
-  <h2>📞 ติดต่อ</h2>
+  <h2>📱 ติดต่อ</h2>
   <p>LINE: @supakorn22552</p>
-  <a href="https://line.me/ti/p/@supakorn22552">
-    <button>👉 กดแอดไลน์</button>
-  </a>
+  <button onclick="window.open('https://line.me/ti/p/~supakorn22552')">
+    💚 แอด LINE
+  </button>
 </div>
 
-</body>
-</html>
+<script>
+/* สร้างหัวใจตก */
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.classList.add("heart");
+  heart.innerHTML = "💖";
+
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.animationDuration = (3 + Math.random() * 5) + "s";
+
+  document.body.appendChild(heart);
+
+  setTimeout(() => {
+    heart.remove();
+  }, 8000);
+}
+
+sh
