@@ -4,70 +4,56 @@
 <meta charset="UTF-8">
 <title>IOVE SHOP</title>
 
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+
 <style>
 body {
   margin: 0;
   font-family: Arial;
-  color: white;
   text-align: center;
-  overflow-x: hidden;
-
-  background: url('https://images.unsplash.com/photo-1526045612212-70caf35c14df') no-repeat center center fixed;
-  background-size: cover;
+  color: white;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
 }
 
-body::before {
-  content: "";
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.4);
-  z-index: -1;
-}
-
+/* header */
 header {
-  padding: 25px;
-  font-size: 32px;
-  background: rgba(255,105,180,0.3);
-  backdrop-filter: blur(10px);
-  border-bottom: 2px solid pink;
+  padding: 20px;
+  font-size: 28px;
+  background: rgba(255,105,180,0.6);
 }
 
+/* ตัวอนิเมะ */
+.anime {
+  width: 120px;
+  margin-top: 10px;
+}
+
+/* กล่อง */
 .box {
   margin: 20px;
   padding: 20px;
-  background: rgba(255,255,255,0.1);
+  background: rgba(0,0,0,0.5);
   border-radius: 20px;
-  border: 1px solid pink;
-  backdrop-filter: blur(10px);
 }
 
+/* ปุ่ม */
 button {
-  padding: 14px 25px;
-  background: linear-gradient(45deg, pink, hotpink);
+  padding: 10px 20px;
+  background: hotpink;
   border: none;
+  border-radius: 10px;
   color: white;
+  font-size: 16px;
+}
+
+/* สินค้า */
+.item {
+  background: rgba(255,255,255,0.1);
+  margin: 10px;
+  padding: 15px;
   border-radius: 15px;
-  font-size: 18px;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-button:hover {
-  transform: scale(1.1);
-}
-
-.heart {
-  position: fixed;
-  top: -10px;
-  font-size: 20px;
-  animation: fall linear infinite;
-}
-
-@keyframes fall {
-  to {
-    transform: translateY(100vh);
-  }
 }
 </style>
 
@@ -76,75 +62,52 @@ button:hover {
 
 <header>💖 IOVE SHOP 💖</header>
 
+<!-- ตัวอนิเมะ -->
+<img class="anime" src="https://i.imgur.com/6X12UGp.png">
+
+<!-- ล็อกอิน -->
 <div class="box">
-  <h2>🎮 รับเติมเกม</h2>
-  <p>Free Fire / Roblox / ROV</p>
-  <button>💰 เติมเงิน</button>
+  <h2>🔐 เข้าสู่ระบบ</h2>
+  <button onclick="login()">ล็อกอินด้วย Google</button>
+  <p id="user"></p>
 </div>
 
+<!-- สินค้า -->
 <div class="box">
-  <h2>📱 ติดต่อ</h2>
-  <p>LINE: @supakorn22552</p>
-  <button onclick="window.open('https://line.me/ti/p/~supakorn22552')">
-    💚 แอด LINE
-  </button>
+  <h2>🛒 สินค้า</h2>
+
+  <div class="item">
+    💎 50 บาท
+    <br><button>ซื้อ</button>
+  </div>
+
+  <div class="item">
+    💎 100 บาท
+    <br><button>ซื้อ</button>
+  </div>
+
 </div>
 
 <script>
-function createHeart() {
-  const heart = document.createElement("div");
-  heart.classList.add("heart");
-  heart.innerHTML = "💖";
+// 🔥 ใส่ Firebase ของมึงตรงนี้
+const firebaseConfig = {
+  apiKey: "ใส่ของมึง",
+  authDomain: "ใส่ของมึง",
+  projectId: "ใส่ของมึง",
+};
 
-  heart.style.left = Math.random() * 100 + "vw";
-  heart.style.animationDuration = (3 + Math.random() * 5) + "s";
+// init
+firebase.initializeApp(firebaseConfig);
 
-  document.body.appendChild(heart);
-
-  setTimeout(() => {
-    heart.remove();
-  }, 8000);
+// login
+function login() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithPopup(provider)
+  .then(result => {
+    document.getElementById("user").innerText = "👤 " + result.user.displayName;
+  });
 }
-
-setInterval(createHeart, 300);
 </script>
 
 </body>
 </html>
-</head>
-<body>
-
-<header>💖 IOVE SHOP 💖</header>
-
-<div class="box">
-  <h2>🎮 รับเติมเกม</h2>
-  <p>Free Fire / Roblox / ROV</p>
-  <button>💰 เติมเงิน</button>
-</div>
-
-<div class="box">
-  <h2>📱 ติดต่อ</h2>
-  <p>LINE: @supakorn22552</p>
-  <button onclick="window.open('https://line.me/ti/p/~supakorn22552')">
-    💚 แอด LINE
-  </button>
-</div>
-
-<script>
-/* สร้างหัวใจตก */
-function createHeart() {
-  const heart = document.createElement("div");
-  heart.classList.add("heart");
-  heart.innerHTML = "💖";
-
-  heart.style.left = Math.random() * 100 + "vw";
-  heart.style.animationDuration = (3 + Math.random() * 5) + "s";
-
-  document.body.appendChild(heart);
-
-  setTimeout(() => {
-    heart.remove();
-  }, 8000);
-}
-
-sh
