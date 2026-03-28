@@ -1,10 +1,47 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>IOVE SHOP</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  color: white;
+  text-align: center;
+  overflow-x: hidden;
+
+  background: url('https://images.unsplash.com/photo-1526045612212-70caf35c14df') no-repeat center center fixed;
+  background-size: cover;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  z-index: -1;
+}
+
+header {
+  padding: 25px;
+  font-size: 32px;
+  background: rgba(255,105,180,0.3);
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid pink;
+}
+
+.box {
+  margin: 20px;
+  padding: 20px;
   background: rgba(255,255,255,0.1);
   border-radius: 20px;
   border: 1px solid pink;
   backdrop-filter: blur(10px);
 }
 
-/* ปุ่ม */
 button {
   padding: 14px 25px;
   background: linear-gradient(45deg, pink, hotpink);
@@ -20,7 +57,6 @@ button:hover {
   transform: scale(1.1);
 }
 
-/* ✨ เอฟเฟกต์หัวใจตก */
 .heart {
   position: fixed;
   top: -10px;
@@ -35,6 +71,46 @@ button:hover {
 }
 </style>
 
+</head>
+<body>
+
+<header>💖 IOVE SHOP 💖</header>
+
+<div class="box">
+  <h2>🎮 รับเติมเกม</h2>
+  <p>Free Fire / Roblox / ROV</p>
+  <button>💰 เติมเงิน</button>
+</div>
+
+<div class="box">
+  <h2>📱 ติดต่อ</h2>
+  <p>LINE: @supakorn22552</p>
+  <button onclick="window.open('https://line.me/ti/p/~supakorn22552')">
+    💚 แอด LINE
+  </button>
+</div>
+
+<script>
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.classList.add("heart");
+  heart.innerHTML = "💖";
+
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.animationDuration = (3 + Math.random() * 5) + "s";
+
+  document.body.appendChild(heart);
+
+  setTimeout(() => {
+    heart.remove();
+  }, 8000);
+}
+
+setInterval(createHeart, 300);
+</script>
+
+</body>
+</html>
 </head>
 <body>
 
