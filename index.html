@@ -4,109 +4,213 @@
 <meta charset="UTF-8">
 <title>IOVE SHOP</title>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
-
 <style>
 body {
-  margin: 0;
-  font-family: Arial;
-  text-align: center;
-  color: white;
-  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  margin:0;
+  font-family:Arial;
+  background: linear-gradient(135deg,#ff9acb,#ff69b4);
+  text-align:center;
 }
 
-/* header */
 header {
-  padding: 20px;
-  font-size: 28px;
-  background: rgba(255,105,180,0.6);
+  color:white;
+  padding:20px;
+  font-size:30px;
 }
 
-/* ตัวอนิเมะ */
-.anime {
-  width: 120px;
-  margin-top: 10px;
+/* grid */
+.grid {
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  padding:10px;
 }
 
-/* กล่อง */
-.box {
-  margin: 20px;
-  padding: 20px;
-  background: rgba(0,0,0,0.5);
-  border-radius: 20px;
+.card {
+  background:#ff69b4;
+  color:white;
+  padding:15px;
+  border-radius:15px;
+  cursor:pointer;
 }
 
-/* ปุ่ม */
+.vip {
+  background:gold;
+  color:black;
+}
+
+input {
+  padding:10px;
+  width:80%;
+  margin:10px;
+  border-radius:10px;
+  border:none;
+}
+
 button {
-  padding: 10px 20px;
-  background: hotpink;
-  border: none;
-  border-radius: 10px;
-  color: white;
-  font-size: 16px;
+  padding:12px;
+  width:90%;
+  border:none;
+  border-radius:10px;
+  margin:5px;
+  color:white;
 }
 
-/* สินค้า */
-.item {
-  background: rgba(255,255,255,0.1);
-  margin: 10px;
-  padding: 15px;
-  border-radius: 15px;
+/* hearts */
+.heart {
+  position:fixed;
+  animation:fall linear infinite;
+}
+@keyframes fall {
+  to { transform:translateY(100vh);}
 }
 </style>
-
 </head>
+
 <body>
 
 <header>💖 IOVE SHOP 💖</header>
 
-<!-- ตัวอนิเมะ -->
-<img class="anime" src="https://i.imgur.com/6X12UGp.png">
+<!-- 🔐 LOGIN -->
+<button style="background:#4285F4;" onclick="login()">🔐 ล็อกอิน Google</button>
+<button style="background:#999;" onclick="logout()">🚪 ออก</button>
 
-<!-- ล็อกอิน -->
-<div class="box">
-  <h2>🔐 เข้าสู่ระบบ</h2>
-  <button onclick="login()">ล็อกอินด้วย Google</button>
-  <p id="user"></p>
-</div>
+<h2>🔥 Free Fire เติม UID</h2>
 
-<!-- สินค้า -->
-<div class="box">
-  <h2>🛒 สินค้า</h2>
+<input id="uid" placeholder="กรอก UID">
 
-  <div class="item">
-    💎 50 บาท
-    <br><button>ซื้อ</button>
-  </div>
+<!-- 💎 แพ็ค -->
+<div class="grid">
 
-  <div class="item">
-    💎 100 บาท
-    <br><button>ซื้อ</button>
-  </div>
+<div class="card" onclick="selectPack(25,68)">68💎<br>25฿</div>
+<div class="card" onclick="selectPack(49,172)">172💎<br>49฿</div>
+<div class="card" onclick="selectPack(88,310)">310💎<br>88฿</div>
+<div class="card" onclick="selectPack(98,344)">344💎<br>98฿</div>
+<div class="card" onclick="selectPack(146,517)">517💎<br>146฿</div>
+<div class="card" onclick="selectPack(195,690)">690💎<br>195฿</div>
+<div class="card" onclick="selectPack(292,1052)">1052💎<br>292฿</div>
+<div class="card" onclick="selectPack(439,1569)">1569💎<br>439฿</div>
+<div class="card vip" onclick="selectPack(2900,11094)">🔥11094💎<br>2900฿</div>
 
 </div>
+
+<!-- 💳 QR -->
+<h3>💳 สแกนจ่าย</h3>
+<img src="QR.png" width="200">
+
+<p>📤 อัปโหลดสลิป</p>
+<input type="file" accept="image/*">
+
+<button style="background:hotpink;" onclick="sendFF()">📩 ส่งรายการ</button>
+
+<!-- 💚 LINE -->
+<div style="margin:20px;background:white;padding:15px;border-radius:15px;">
+  <h3>📞 ติดต่อร้าน</h3>
+
+  <a href="https://line.me/ti/p/@supakorn22552" target="_blank">
+    <button style="background:#06c755;">💚 แอด LINE</button>
+  </a>
+
+  <a href="https://line.me/R/ti/p/@supakorn22552" target="_blank">
+    <button style="background:#00b900;">💬 ทักแชท</button>
+  </a>
+
+</div>
+
+<!-- 🔥 FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
 
 <script>
-// 🔥 ใส่ Firebase ของมึงตรงนี้
 const firebaseConfig = {
   apiKey: "ใส่ของมึง",
   authDomain: "ใส่ของมึง",
-  projectId: "ใส่ของมึง",
+  projectId: "ใส่ของมึง"
 };
 
-// init
 firebase.initializeApp(firebaseConfig);
 
-// login
-function login() {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  firebase.auth().signInWithPopup(provider)
-  .then(result => {
-    document.getElementById("user").innerText = "👤 " + result.user.displayName;
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+/* login */
+function login(){
+  let provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider);
+}
+
+function logout(){
+  auth.signOut();
+}
+
+/* เลือกแพ็ค */
+let selectedPrice=0;
+let selectedDiamond=0;
+
+function selectPack(p,d){
+  selectedPrice=p;
+  selectedDiamond=d;
+  alert(`เลือก ${d}💎 ราคา ${p}บาท`);
+}
+
+/* LINE notify */
+function sendLine(msg){
+  fetch("https://notify-api.line.me/api/notify", {
+    method:"POST",
+    headers:{
+      "Content-Type":"application/x-www-form-urlencoded",
+      "Authorization":"Bearer ใส่TOKEN"
+    },
+    body:"message="+encodeURIComponent(msg)
   });
 }
+
+/* ส่งออเดอร์ */
+function sendFF(){
+  let uid=document.getElementById("uid").value;
+  let user=auth.currentUser;
+
+  if(!uid||selectedPrice==0){
+    alert("กรอก UID + เลือกแพ็ค");
+    return;
+  }
+
+  if(!user){
+    alert("ล็อกอินก่อน");
+    return;
+  }
+
+  let msg=`🔥 ออเดอร์ใหม่
+UID:${uid}
+💎${selectedDiamond}
+💰${selectedPrice}
+👤${user.email}`;
+
+  db.collection("orders").add({
+    uid:uid,
+    diamond:selectedDiamond,
+    price:selectedPrice,
+    email:user.email,
+    time:new Date()
+  });
+
+  sendLine(msg);
+
+  alert("ส่งแล้ว!");
+}
+
+/* 💖 หัวใจลอย */
+setInterval(()=>{
+  let h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="💖";
+  h.style.left=Math.random()*100+"%";
+  h.style.animationDuration=(Math.random()*3+2)+"s";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),5000);
+},300);
+
 </script>
 
 </body>
