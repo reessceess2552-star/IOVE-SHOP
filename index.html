@@ -16,9 +16,9 @@ header {
   color:white;
   padding:20px;
   font-size:30px;
+  cursor:pointer;
 }
 
-/* grid */
 .grid {
   display:grid;
   grid-template-columns:repeat(2,1fr);
@@ -34,33 +34,31 @@ header {
   cursor:pointer;
 }
 
-.vip {
-  background:gold;
-  color:black;
-}
+.vip { background:gold; color:black; }
 
-input {
-  padding:10px;
-  width:80%;
-  margin:10px;
-  border-radius:10px;
-  border:none;
-}
-
-button {
+input, button {
   padding:12px;
-  width:90%;
+  margin:5px;
+  width:85%;
   border:none;
   border-radius:10px;
-  margin:5px;
-  color:white;
 }
 
-/* hearts */
+button { color:white; }
+
+.adminPanel {
+  display:none;
+  background:white;
+  padding:15px;
+  border-radius:15px;
+  margin:20px;
+}
+
 .heart {
   position:fixed;
   animation:fall linear infinite;
 }
+
 @keyframes fall {
   to { transform:translateY(100vh);}
 }
@@ -69,55 +67,47 @@ button {
 
 <body>
 
-<header>💖 IOVE SHOP 💖</header>
+<header onclick="openAdmin()">💖 IOVE SHOP 💖 (กด 5 ครั้งเข้าแอดมิน)</header>
 
-<!-- 🔐 LOGIN -->
 <button style="background:#4285F4;" onclick="login()">🔐 ล็อกอิน Google</button>
 <button style="background:#999;" onclick="logout()">🚪 ออก</button>
 
-<h2>🔥 Free Fire เติม UID</h2>
+<h2>🔥 เติมเกม Free Fire</h2>
 
 <input id="uid" placeholder="กรอก UID">
 
-<!-- 💎 แพ็ค -->
 <div class="grid">
-
 <div class="card" onclick="selectPack(25,68)">68💎<br>25฿</div>
 <div class="card" onclick="selectPack(49,172)">172💎<br>49฿</div>
 <div class="card" onclick="selectPack(88,310)">310💎<br>88฿</div>
 <div class="card" onclick="selectPack(98,344)">344💎<br>98฿</div>
 <div class="card" onclick="selectPack(146,517)">517💎<br>146฿</div>
 <div class="card" onclick="selectPack(195,690)">690💎<br>195฿</div>
-<div class="card" onclick="selectPack(292,1052)">1052💎<br>292฿</div>
-<div class="card" onclick="selectPack(439,1569)">1569💎<br>439฿</div>
 <div class="card vip" onclick="selectPack(2900,11094)">🔥11094💎<br>2900฿</div>
-
 </div>
 
-<!-- 💳 QR -->
 <h3>💳 สแกนจ่าย</h3>
 <img src="QR.png" width="200">
 
-<p>📤 อัปโหลดสลิป</p>
-<input type="file" accept="image/*">
-
 <button style="background:hotpink;" onclick="sendFF()">📩 ส่งรายการ</button>
 
-<!-- 💚 LINE -->
-<div style="margin:20px;background:white;padding:15px;border-radius:15px;">
+<div style="background:white;padding:15px;border-radius:15px;margin:15px;">
   <h3>📞 ติดต่อร้าน</h3>
-
   <a href="https://line.me/ti/p/@supakorn22552" target="_blank">
     <button style="background:#06c755;">💚 แอด LINE</button>
   </a>
-
   <a href="https://line.me/R/ti/p/@supakorn22552" target="_blank">
-    <button style="background:#00b900;">💬 ทักแชท</button>
+    <button style="background:#00b900;">💬 แชท</button>
   </a>
-
 </div>
 
-<!-- 🔥 FIREBASE -->
+<!-- ADMIN -->
+<div class="adminPanel" id="admin">
+<h2>🛠️ หลังบ้าน</h2>
+<h3>💸 ยอดรวม: <span id="total">0</span> บาท</h3>
+<div id="orders"></div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
@@ -134,29 +124,46 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-/* login */
+/* LOGIN */
 function login(){
   let provider = new firebase.auth.GoogleAuthProvider();
   auth.signInWithPopup(provider);
 }
+function logout(){ auth.signOut(); }
 
-function logout(){
-  auth.signOut();
-}
-
-/* เลือกแพ็ค */
-let selectedPrice=0;
-let selectedDiamond=0;
-
+/* SELECT PACK */
+let selectedPrice=0, selectedDiamond=0;
 function selectPack(p,d){
   selectedPrice=p;
   selectedDiamond=d;
-  alert(`เลือก ${d}💎 ราคา ${p}บาท`);
+  alert(`เลือก ${d}💎 ราคา ${p}`);
 }
 
-/* LINE notify */
+/* SEND ORDER */
+function sendFF(){
+  let uid=document.getElementById("uid").value;
+  let user=auth.currentUser;
+
+  if(!uid||selectedPrice==0) return alert("กรอกให้ครบ");
+  if(!user) return alert("ล็อกอินก่อน");
+
+  db.collection("orders").add({
+    uid,
+    diamond:selectedDiamond,
+    price:selectedPrice,
+    email:user.email,
+    status:"pending",
+    time:new Date()
+  });
+
+  sendLine(`🔥 ออเดอร์ใหม่ UID:${uid} 💎${selectedDiamond} 💰${selectedPrice}`);
+
+  alert("ส่งรายการสำเร็จ!");
+}
+
+/* LINE */
 function sendLine(msg){
-  fetch("https://notify-api.line.me/api/notify", {
+  fetch("https://notify-api.line.me/api/notify",{
     method:"POST",
     headers:{
       "Content-Type":"application/x-www-form-urlencoded",
@@ -166,41 +173,54 @@ function sendLine(msg){
   });
 }
 
-/* ส่งออเดอร์ */
-function sendFF(){
-  let uid=document.getElementById("uid").value;
-  let user=auth.currentUser;
+/* ADMIN */
+let tap=0;
+function openAdmin(){
+  tap++;
+  if(tap>=5){
+    document.getElementById("admin").style.display="block";
 
-  if(!uid||selectedPrice==0){
-    alert("กรอก UID + เลือกแพ็ค");
-    return;
+    db.collection("orders").orderBy("time","desc")
+    .onSnapshot(snap=>{
+      let html="";
+      let total=0;
+
+      snap.forEach(doc=>{
+        let d=doc.data();
+        let status=d.status||"pending";
+
+        if(status=="done") total+=d.price;
+
+        let color = status=="done" ? "green" : status=="cancel" ? "red" : "orange";
+
+        html+=`
+        <div style="background:white;padding:10px;margin:10px;border-radius:10px;">
+        UID:${d.uid} 💎${d.diamond} 💰${d.price}<br>
+        👤 ${d.email}<br>
+
+        <b style="color:${color};">สถานะ: ${status}</b><br><br>
+
+        <button onclick="updateStatus('${doc.id}','done')" style="background:green;">✅ อนุมัติ</button>
+        <button onclick="updateStatus('${doc.id}','cancel')" style="background:red;">❌ ยกเลิก</button>
+        </div>
+        `;
+      });
+
+      document.getElementById("orders").innerHTML=html;
+      document.getElementById("total").innerText=total;
+    });
   }
-
-  if(!user){
-    alert("ล็อกอินก่อน");
-    return;
-  }
-
-  let msg=`🔥 ออเดอร์ใหม่
-UID:${uid}
-💎${selectedDiamond}
-💰${selectedPrice}
-👤${user.email}`;
-
-  db.collection("orders").add({
-    uid:uid,
-    diamond:selectedDiamond,
-    price:selectedPrice,
-    email:user.email,
-    time:new Date()
-  });
-
-  sendLine(msg);
-
-  alert("ส่งแล้ว!");
 }
 
-/* 💖 หัวใจลอย */
+function updateStatus(id,status){
+  db.collection("orders").doc(id).update({
+    status:status
+  });
+
+  sendLine(`📢 ออเดอร์ ${id} → ${status}`);
+}
+
+/* HEART EFFECT */
 setInterval(()=>{
   let h=document.createElement("div");
   h.className="heart";
